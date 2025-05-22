@@ -1,0 +1,62 @@
+path:
+  root: '/Users/chenzuyu/Library/CloudStorage/OneDrive-GeorgiaInstituteofTechnology/Cadenza_challenge_2024/datasets/cad_icassp_2024_core'
+  metadata_dir: ${path.root}/metadata
+  music_dir: ${path.root}/audio/at_mic_music
+  gains_file: ${path.metadata_dir}/gains.json
+  head_positions_file: ${path.metadata_dir}/head_positions.json
+  listeners_file: ${path.metadata_dir}/listeners.train.json
+  music_file: ${path.metadata_dir}/at_mic_music.train.json
+  scenes_file: ${path.metadata_dir}/scenes.train.json
+  scene_listeners_file: ${path.metadata_dir}/scene_listeners.train.json
+  exp_folder: ./exp  # folder to store enhanced signals and final results
+  # Validation paths
+  validation_root: '/Users/chenzuyu/Library/CloudStorage/OneDrive-GeorgiaInstituteofTechnology/Cadenza_challenge_2024/datasets/cad_icassp_2024_validation'
+  validation_metadata_dir: ${path.validation_root}/metadata
+  validation_music_dir: ${path.validation_root}/audio/at_mic_music
+  validation_listeners_file: ${path.validation_metadata_dir}/listeners.valid.json
+  validation_music_file: ${path.validation_metadata_dir}/at_mic_music.valid.json
+  validation_scenes_file: ${path.validation_metadata_dir}/scenes.valid.json
+  validation_scene_listeners_file: ${path.validation_metadata_dir}/scene_listeners.valid.json
+
+sample_rate: 44100
+remix_sample_rate: 32000
+HAAQI_sample_rate: 24000
+
+nalr:
+  nfir: 220
+  sample_rate: ${sample_rate}
+
+apply_compressor: False
+compressor:
+  threshold: 0.35
+  attenuation: 0.1
+  attack: 50
+  release: 1000
+  rms_buffer_size: 0.064
+
+soft_clip: True
+
+separator:
+  model: demucs   # demucs or openunmix
+  device: ~
+
+train:
+  epochs: 10
+  max_segments_per_epoch: 50
+  segment_duration: 5  # Kept at 5 for training flexibility, can change to 10
+  batch_size: 5  # number of segments per batch
+
+validate:
+  max_scenes: 15
+  segment_duration: 10  # Updated to match 10s clips
+
+evaluate:
+  set_random_seed: True
+  small_test: False
+  batch_size: 1  # Number of batches
+  batch: 0       # Batch number to evaluate
+
+# hydra config
+hydra:
+  run:
+    dir: ${path.exp_folder}
